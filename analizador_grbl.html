@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<link rel="icon" type="image/png" href="analizador_grbl.png">
+<link rel="stylesheet" href="estilo.css">
+<script src="vectores.js"></script>
+<script src="tipos_datos.js"></script>
+<script src="analizador_archivo.js"></script>
+<script src="analizador_com.js"></script>
+<script src="analizador_fmov.js"></script>
+<script src="gen_func.js"></script>
+<script src="gen_variables.js"></script>
+
+<html>
+	<head>
+		<title>Analizador gcode (GRBL)</title>
+	</head>
+	<body style="background-color:#FCFCFC;">
+		<H1 style="text-align: center;font-size: 1.3em; margin: 1;font-family: Arial;">Analizador gcode (GRBL)</H1>
+		<div class="divTable greyGridTable">
+			<div class="divTableHeading">
+				<div class="divTableRow">
+					<div class="divTableHead">
+						Archivo a Analizar
+					</div>
+					<div class="divTableHead">
+
+					</div>
+				</div>
+			</div>
+			<div class="divTableBody">
+				<div class="divTableRow">
+					<div class="divTableCell">
+						<div style="background-color: #F4F6F6;">
+							(Formato Archivo: .gcode .nc)
+							<input type="file" id="archivoAAnalizar" accept=".gcode,.nc">
+						</div>
+					</div>
+					<div class="divTableCell">
+						<button title="Analizar" onclick="analizar();">
+							Analizar Archivo
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<hr>
+
+		<H1 style="text-align: center;font-size: 1.3em; margin: 1;font-family: Arial;">Configuracion Maquina</H1>
+		<div style="width: 100%;  display: flex; justify-content: center;">
+			<div class="divTable greyGridTable" style="width: 700px;">
+				<div class="divTableHeading">
+					<div class="divTableRow">
+						<div class="divTableHead">
+							Propiedad
+						</div>
+						<div class="divTableHead">
+							Eje X
+						</div>
+						<div class="divTableHead">
+							Eje Y
+						</div>
+						<div class="divTableHead">
+							Eje Z
+						</div>
+						<div class="divTableHead">
+							Unidad
+						</div>
+					</div>
+				</div>
+				<div class="divTableBody">
+					<div class="divTableRow">
+						<div class="divTableCell">
+							Velocidad Maxima
+						</div>
+						<div class="divTableCell">
+							<input type="text" class="inputPropiedad" id="velMaxX" value="750" >
+						</div>
+						<div class="divTableCell">
+							<input type="text" class="inputPropiedad" id="velMaxY" value="750" >
+						</div>
+						<div class="divTableCell">
+							<input type="text" class="inputPropiedad" id="velMaxZ" value="100" >
+						</div>
+						<div class="divTableCell">
+							mm/min
+						</div>
+					</div>
+					<div class="divTableRow">
+						<div class="divTableCell">
+							Aceleracion
+						</div>
+						<div class="divTableCell">
+							<input type="text" class="inputPropiedad" id="acelMaxX" value="20" >
+						</div>
+						<div class="divTableCell">
+							<input type="text" class="inputPropiedad" id="acelMaxY" value="20" >
+						</div>
+						<div class="divTableCell">
+							<input type="text" class="inputPropiedad" id="acelMaxZ" value="20" >
+						</div>
+						<div class="divTableCell">
+							mm/seg
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<hr>
+		<H1 style="text-align: center;font-size: 1.3em; margin: 1;font-family: Arial;">Resultados</H1>
+		<div style="width: 100%;  display: flex; justify-content: center;">
+			<div class="divTable greyGridTable" style="width: 600px;">
+				<div class="divTableHeading">
+					<div class="divTableRow">
+						<div class="divTableHead">
+							Parametro
+						</div>
+						<div class="divTableHead">
+							Resultado
+						</div>
+						<div class="divTableHead">
+							Unidad
+						</div>
+					</div>
+				</div>
+				<div class="divTableBody">
+					<div class="divTableRow">
+						<div class="divTableCell">
+							Tiempo Total
+						</div>
+						<div class="divTableCell">
+							<div id="resutadoTiempoTotal">
+								--
+							</div>
+						</div>
+						<div class="divTableCell">
+							segundos
+						</div>
+					</div>
+					<div class="divTableRow">
+						<div class="divTableCell">
+							Tiempo Total
+						</div>
+						<div class="divTableCell">
+							<div id="resutadoTiempoTotalHHMMSS">
+								--
+							</div>
+						</div>
+						<div class="divTableCell">
+							HH:MM:SS
+						</div>
+					</div>
+					<div class="divTableRow">
+						<div class="divTableCell">
+							Distancia Total
+						</div>
+						<div class="divTableCell">
+							<div id="DistanciaTotal">
+								--
+							</div>
+						</div>
+						<div class="divTableCell">
+							mm
+						</div>
+					</div>
+					<div class="divTableRow">
+						<div class="divTableCell">
+							Distancia G0
+						</div>
+						<div class="divTableCell">
+							<div id="DistanciaG0">
+								--
+							</div>
+						</div>
+						<div class="divTableCell">
+							mm
+						</div>
+					</div>
+					<div class="divTableRow">
+						<div class="divTableCell">
+							Distancia G1
+						</div>
+						<div class="divTableCell">
+							<div id="DistanciaG1">
+								--
+							</div>
+						</div>
+						<div class="divTableCell">
+							mm
+						</div>
+					</div>
+					<div class="divTableRow">
+						<div class="divTableCell">
+							<div class="divcentrador">
+								<p class="ptipoMov">
+									Tipo movimiento 1
+									<br>
+									<br>
+									Distancia insuficiente para acelerar a la velocidad final del movimiento
+								</p>
+							</div>
+						</div>
+						<div class="divTableCell">
+							<div id="CasosMov.tipo1">
+								--
+							</div>
+						</div>
+						<div class="divTableCell">
+							<img src="imagenes/movtipo1.png" width="150" height="80">
+						</div>
+					</div>
+					<div class="divTableRow">
+						<div class="divTableCell">
+							<div class="divcentrador">
+								<p class="ptipoMov">
+									Tipo movimiento 2
+									<br>
+									<br>
+									Distancia suficiente para sobrepasar la velocidad final, pero sin alcanzar la maxima para el movimiento
+								</p>
+							</div>
+						</div>
+						<div class="divTableCell">
+							<div id="CasosMov.tipo2">
+								--
+							</div>
+						</div>
+						<div class="divTableCell">
+							<img src="imagenes/movtipo2.png" width="150" height="80">
+						</div>
+					</div>
+					<div class="divTableRow">
+						<div class="divTableCell">
+							<div class="divcentrador">
+								<p class="ptipoMov">
+									Tipo movimiento 2.1
+									<br>
+									<br>
+									Igual que tipo 2, pero con velocidad inicial y final iguales
+								</p>
+							</div>
+						</div>
+						<div class="divTableCell">
+							<div id="CasosMov.tipo2_1">
+								--
+							</div>
+						</div>
+						<div class="divTableCell">
+							<img src="imagenes/movtipo2_1.png" width="150" height="80">
+						</div>
+					</div>
+					<div class="divTableRow">
+						<div class="divTableCell">
+							<div class="divcentrador">
+								<p class="ptipoMov">
+									Tipo movimiento 3
+									<br>
+									<br>
+									Movimiento normal, se acelera y desacelera con distancia suficiente y se alcanza la velocidad maxima de movimiento
+								</p>
+							</div>
+						</div>
+						<div class="divTableCell">
+							<div id="CasosMov.tipo3">
+								--
+							</div>
+						</div>
+						<div class="divTableCell">
+							<img src="imagenes/movtipo3.png" width="150" height="80">
+						</div>
+					</div>
+					<div class="divTableRow">
+						<div class="divTableCell">
+							Tiempo Calculo
+						</div>
+						<div class="divTableCell">
+							<div id="TiempoCalc">
+								--
+							</div>
+						</div>
+						<div class="divTableCell">
+							ms
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>
